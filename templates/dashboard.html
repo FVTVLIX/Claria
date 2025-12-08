@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="margin-bottom: 2rem;">Welcome, {{ current_user.username }}!</h1>
+
+<div class="dashboard-grid">
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Mood Logger -->
+        <div class="card">
+            <h3>How are you feeling today?</h3>
+            <form action="{{ url_for('log_mood') }}" method="POST">
+                <div class="mood-selector">
+                    <button class="mood-btn" data-score="1" title="Very Bad">😢</button>
+                    <button class="mood-btn" data-score="2" title="Bad">☹️</button>
+                    <button class="mood-btn" data-score="3" title="Neutral">😐</button>
+                    <button class="mood-btn" data-score="4" title="Good">🙂</button>
+                    <button class="mood-btn" data-score="5" title="Very Good">😁</button>
+                </div>
+                <input type="hidden" id="mood-score" name="score" required>
+
+                <div class="form-group">
+                    <input type="text" name="tags" placeholder="Tags (e.g., work, family, sleep)" class="form-control">
+                </div>
+                <div class="form-group">
+                    <textarea name="note" rows="3" placeholder="Want to add a note?" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Log Mood</button>
+            </form>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <h3>Recent History</h3>
+            {% if moods %}
+            <div class="mood-list">
+                {% for mood in moods %}
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0;">
+                    <div>
+                        <span style="font-size: 1.2rem;">
+                            {% if mood.score == 1 %}😢{% elif mood.score == 2 %}☹️{% elif mood.score == 3 %}😐{% elif
+                            mood.score == 4 %}🙂{% else %}😁{% endif %}
+                        </span>
+                        <span style="margin-left: 10px; font-weight: 500;">
+                            {{ mood.timestamp.strftime('%B %d, %H:%M') }}
+                        </span>
+                        {% if mood.tags %}
+                        <br>
+                        <small style="color: var(--text-muted); margin-left: 35px;">Tags: {{ mood.tags }}</small>
+                        {% endif %}
+                        {% if mood.note %}
+                        <p style="margin: 5px 0 0 35px; color: var(--text-muted); font-style: italic;">"{{ mood.note }}"
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No mood entries yet. Start tracking above!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="card" style="text-align: center;">
+            <i class="fa-solid fa-robot fa-3x" style="color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <h3>Need to Talk?</h3>
+            <p style="margin-bottom: 1rem;">I'm here to listen and support you.</p>
+            <a href="{{ url_for('chat') }}" class="btn-primary"
+                style="width: 50%; display: inline-block; box-sizing: border-box;">Start Chat</a>
+        </div>
+
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;">
+                    <a href="{{ url_for('resources') }}"
+                        style="text-decoration: none; color: var(--text-main); display: flex; align-items: center;">
+                        <i class="fa-solid fa-book-medical"
+                            style="margin-right: 10px; color: var(--secondary-color);"></i>
+                        Coping Strategies
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

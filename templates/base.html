@@ -1,0 +1,72 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claria - Your Mental Health Companion</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="grain-overlay"></div>
+
+    <div class="marquee-container">
+        <div class="marquee-content">
+            ★ YOUR MENTAL HEALTH COMPANION ★ ALIGN YOUR MIND ★ FIND YOUR PEACE ★ 24/7 SUPPORT ★ YOUR MENTAL HEALTH
+            COMPANION ★
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-logo">
+                CLARIA<span class="logo-dot">.</span>
+            </a>
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="nav-item">DASHBOARD</a>
+                <a href="{{ url_for('chat') }}" class="nav-item">ORACLE</a>
+                <a href="{{ url_for('resources') }}" class="nav-item">GRIMOIRE</a>
+                <a href="{{ url_for('logout') }}" class="nav-item">EXIT</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-item">ENTER</a>
+                <a href="{{ url_for('register') }}" class="nav-item btn-primary">JOIN</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-msg">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Mystical Decorations -->
+    <div class="floating-squiggle squiggle-1"></div>
+    <div class="floating-squiggle squiggle-2"></div>
+    <div class="floating-squiggle squiggle-3"></div>
+    <div class="floating-squiggle squiggle-4"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
+```

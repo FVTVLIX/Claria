@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1 class="hero-title">MENTAL<br>CLARITY<br>REIMAGINED</h1>
+    <p class="hero-subtitle">
+        A sanctuary for your mind. Track your patterns, converse with our Oracle AI, and find the resources you need in
+        a safe, judgment-free space.
+    </p>
+    <div style="display: flex; gap: 20px; justify-content: center;">
+        <a href="{{ url_for('register') }}" class="btn-primary">BEGIN JOURNEY</a>
+        <a href="{{ url_for('login') }}" class="btn-secondary">ENTER PORTAL</a>
+    </div>
+</div>
+
+<!-- Features Section (Dark with Torn Edges) -->
+<div class="torn-section dark">
+    <div class="torn-edge-top"></div>
+    <div class="container" style="margin: 0 auto; max-width: 1000px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem;">
+            <div style="text-align: center;">
+                <i class="fa-solid fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: #fff;"></i>
+                <h3 style="color: #fff;">MOOD TRACKING</h3>
+                <p>Visualize your emotional landscape. Our analytics transform your daily entries into a map of your
+                    inner world.</p>
+            </div>
+            <div style="text-align: center;">
+                <i class="fa-solid fa-eye" style="font-size: 3rem; margin-bottom: 1rem; color: #fff;"></i>
+                <h3 style="color: #fff;">THE ORACLE</h3>
+                <p>An AI companion that listens without judgment. Available 24/7 to help you navigate life's
+                    complexities.</p>
+            </div>
+            <div style="text-align: center;">
+                <i class="fa-solid fa-book-journal-whills"
+                    style="font-size: 3rem; margin-bottom: 1rem; color: #fff;"></i>
+                <h3 style="color: #fff;">GRIMOIRE</h3>
+                <p>A curated library of coping strategies and professional resources to aid your healing journey.</p>
+            </div>
+        </div>
+    </div>
+    <div class="torn-edge-bottom"></div>
+</div>
+
+<!-- Manifesto Section -->
+<div class="container" style="margin-top: 6rem; position: relative;">
+    <div style="display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px; padding: 2rem;">
+            <h2>WE BELIEVE IN <br> <span style="background: var(--accent-color); padding: 0 10px;">RADICAL
+                    SELF-CARE</span></h2>
+            <p style="font-size: 1.1rem; margin-top: 2rem;">
+                Mental health isn't just about fixing what's broken. It's about understanding the intricate
+                constellation of your emotions.
+            </p>
+            <p style="font-size: 1.1rem;">
+                Claria provides the tools to document, analyze, and understand your unique patterns.
+            </p>
+            <br>
+            <a href="{{ url_for('register') }}" class="btn-primary">JOIN THE COLLECTIVE</a>
+        </div>
+        <div style="flex: 1; min-width: 300px; text-align: center;">
+            <!-- Collage Image Placeholder logic using font icons -->
+            <div
+                style="position: relative; width: 300px; height: 400px; margin: 0 auto; background: #eee; border: 1px solid #111; display: flex; align-items: center; justify-content: center; transform: rotate(3deg);">
+                <i class="fa-solid fa-sun" style="font-size: 8rem; color: var(--text-main);"></i>
+                <div
+                    style="position: absolute; top: -20px; right: -20px; background: var(--accent-color); padding: 10px; border: 1px solid #111; font-family: 'Space Mono'; font-weight: bold;">
+                    Est. 2025</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

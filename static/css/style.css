@@ -1,0 +1,484 @@
+:root {
+    --bg-color: #F9F9F9;
+    /* Paper White */
+    --text-main: #111111;
+    /* Deep Ink */
+    --primary-color: #111111;
+    --accent-color: #D4AF37;
+    /* Gold */
+    --border-color: #111111;
+    --font-mono: 'Space Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    /* Paper Texture */
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* Grain Overlay */
+.grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* --- Typography --- */
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 3.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+    border-bottom: 2px solid var(--text-main);
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* --- Marquee --- */
+.marquee-container {
+    background: var(--text-main);
+    color: var(--bg-color);
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 1px dashed var(--text-main);
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* --- Navbar --- */
+.navbar {
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+.logo-dot {
+    color: var(--accent-color);
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-main);
+    margin-left: 30px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--text-main);
+    transition: width 0.3s;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* --- Container --- */
+.container {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 20px;
+}
+
+/* --- Torn Paper Cards --- */
+.card,
+.auth-wrapper,
+.feature-card,
+.chat-container {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
+    /* Torn edge effect using clip-path could be complex, simple ragged border here */
+    border: 1px solid #111;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 10px;
+    background: rgba(212, 175, 55, 0.3);
+    /* Tape */
+    opacity: 0.7;
+}
+
+/* --- Buttons --- */
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 12px 30px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1px solid var(--text-main);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--text-main);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--text-main);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+}
+
+/* --- Forms --- */
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    background: #fdfdfd;
+    font-family: var(--font-sans);
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--text-main);
+    background: #fff;
+}
+
+/* --- Dashboard --- */
+.mood-selector {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 1rem;
+}
+
+.mood-btn {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: grayscale(100%);
+    transition: all 0.2s;
+}
+
+.mood-btn:hover,
+.mood-btn.selected {
+    filter: grayscale(0%);
+    transform: translateY(-5px);
+}
+
+/* --- Chat --- */
+.chat-container {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #111;
+    background: #fff;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.message {
+    max-width: 80%;
+    padding: 15px 20px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    position: relative;
+    border: 1px solid #111;
+}
+
+.message.user {
+    align-self: flex-end;
+    background: var(--text-main);
+    color: white;
+}
+
+.message.ai {
+    align-self: flex-start;
+    background: white;
+    color: var(--text-main);
+}
+
+.message.crisis {
+    border: 2px solid red;
+    color: red;
+}
+
+.chat-input-area {
+    padding: 1.5rem;
+    border-top: 1px solid #111;
+    display: flex;
+    gap: 1rem;
+}
+
+.chat-input-area input {
+    flex: 1;
+    border: none;
+    border-bottom: 1px solid #111;
+    padding: 10px;
+    font-family: var(--font-mono);
+}
+
+.chat-input-area input:focus {
+    outline: none;
+    border-bottom: 2px solid #111;
+}
+
+.chat-input-area button {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* --- Floating Elements (Hand-drawn Squiggles) --- */
+.floating-squiggle {
+    position: fixed;
+    z-index: -1;
+    opacity: 0.15;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Squiggle 1: Loop */
+.squiggle-1 {
+    top: 15%;
+    left: 5%;
+    width: 100px;
+    height: 100px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,50 C30,10 70,10 90,50 C70,90 30,90 10,50' stroke='%23111' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    animation: drift 15s infinite ease-in-out;
+}
+
+/* Squiggle 2: Zigzag */
+.squiggle-2 {
+    bottom: 20%;
+    right: 8%;
+    width: 120px;
+    height: 60px;
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,30 L30,10 L50,50 L70,10 L90,50 L110,30' stroke='%23111' stroke-width='3' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E");
+    animation: drift 20s infinite reverse ease-in-out;
+}
+
+/* Squiggle 3: Rough Circle */
+.squiggle-3 {
+    top: 40%;
+    right: 15%;
+    width: 80px;
+    height: 80px;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' stroke='%23D4AF37' stroke-width='3' fill='none' stroke-dasharray='10 5'/%3E%3C/svg%3E");
+    animation: spin-drift 25s infinite linear;
+}
+
+/* Squiggle 4: Scribble */
+.squiggle-4 {
+    bottom: 10%;
+    left: 15%;
+    width: 150px;
+    height: 150px;
+    background-image: url("data:image/svg+xml,%3Csvg width='150' height='150' viewBox='0 0 150 150' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20,75 Q40,10 75,75 T130,75' stroke='%23111' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    animation: drift 18s infinite ease-in-out;
+}
+
+@keyframes drift {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(30px, -20px) rotate(5deg);
+    }
+
+    66% {
+        transform: translate(-20px, 30px) rotate(-5deg);
+    }
+}
+
+@keyframes spin-drift {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(20px, 40px) rotate(180deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+/* --- Torn Edge Effects --- */
+.torn-section {
+    position: relative;
+    padding: 6rem 2rem;
+    margin: 2rem 0;
+    background: #fff;
+    color: var(--text-main);
+}
+
+.torn-section.dark {
+    background: var(--text-main);
+    color: var(--bg-color);
+}
+
+.torn-section.dark h2,
+.torn-section.dark p {
+    color: var(--bg-color);
+}
+
+.torn-edge-top {
+    position: absolute;
+    top: -45px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47,0,47,22.5,94,22.5s47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5V0Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    transform: rotate(180deg);
+}
+
+.dark .torn-edge-top {
+    fill: #111111 !important;
+    /* SVG fill color needs to change via mask or separate image. Using direct filter for simplicity or just background color match */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47,0,47,22.5,94,22.5s47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5V0Z' fill='%23111111'/%3E%3C/svg%3E");
+}
+
+.torn-edge-bottom {
+    position: absolute;
+    bottom: -45px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47,0,47,22.5,94,22.5s47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5V0Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+}
+
+.dark .torn-edge-bottom {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47,0,47,22.5,94,22.5s47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47,22.5,94,22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5,47-22.5,94-22.5V0Z' fill='%23111111'/%3E%3C/svg%3E");
+}
+
+/* --- Hero --- */
+.hero-section {
+    text-align: center;
+    padding: 6rem 0;
+    position: relative;
+}
+
+.hero-title {
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 2rem;
+    background: white;
+    display: inline-block;
+    padding: 10px 30px;
+    border: 1px solid #111;
+    transform: rotate(-2deg);
+    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}

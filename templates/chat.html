@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="chat-wrapper" style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1><i class="fa-solid fa-robot" style="color: var(--primary-color);"></i> Claria Companion</h1>
+        <span class="badge"
+            style="background: #e1fcf6; color: #00b894; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">
+            <i class="fa-solid fa-circle" style="font-size: 0.6rem;"></i> Online
+        </span>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <div class="message ai">
+                Hello! I'm Claria. I'm here to listen, support, and help you navigate your feelings. How are you feeling
+                today?
+            </div>
+        </div>
+        <form class="chat-input-area" id="chat-form">
+            <input type="text" id="chat-input" placeholder="Type your message here..."
+                style="flex: 1; padding: 12px; border: 1px solid #dfe6e9; border-radius: 20px; outline: none;">
+            <button type="submit" class="btn-primary"
+                style="border-radius: 50%; width: 50px; height: 50px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <div style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        <i class="fa-solid fa-shield-heart"></i> Your conversations are private. Claria is an AI and not a replacement
+        for professional help.
+    </div>
+</div>
+{% endblock %}

@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
     mood_entries = db.relationship('MoodEntry', backref='author', lazy='dynamic')
+    messages = db.relationship('ChatMessage', backref='author', lazy='dynamic')
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
@@ -30,6 +31,14 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
+
+class ChatMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(1000))
+    role = db.Column(db.String(20)) # 'user' or 'assistant' or 'system'
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    is_crisis = db.Column(db.Boolean, default=False)
 
 class MoodEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -100,9 +109,40 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    moods = current_user.mood_entries.order_by(MoodEntry.timestamp.desc()).limit(7).all()
-    # Simple analytics - last 7 entries
-    return render_template('dashboard.html', moods=moods)
+    moods = current_user.mood_entries.order_by(MoodEntry.timestamp.desc()).limit(15).all() # Increased limit for better analytics view
+    
+    # Analytics: Average Mood per Tag
+    all_moods = current_user.mood_entries.all()
+    tag_scores = {}
+    tag_counts = {}
+    
+    for m in all_moods:
+        if m.tags:
+            # Split tags by comma, strip whitespace
+            tags_list = [t.strip() for t in m.tags.split(',') if t.strip()]
+            for tag in tags_list:
+                tag = tag.lower() # Normalize case
+                if tag not in tag_scores:
+                    tag_scores[tag] = 0
+                    tag_counts[tag] = 0
+                tag_scores[tag] += m.score
+                tag_counts[tag] += 1
+                
+    # Calculate averages
+    analytics_labels = []
+    analytics_data = []
+    
+    for tag in tag_scores:
+        avg = tag_scores[tag] / tag_counts[tag]
+        analytics_labels.append(tag.title())
+        analytics_data.append(round(avg, 2))
+        
+    tag_analytics = {
+        'labels': analytics_labels,
+        'data': analytics_data
+    }
+    
+    return render_template('dashboard.html', moods=moods, tag_analytics=tag_analytics)
 
 @app.route('/log_mood', methods=['POST'])
 @login_required
@@ -120,7 +160,9 @@ def log_mood():
 @app.route('/chat')
 @login_required
 def chat():
-    return render_template('chat.html')
+    # Load last 50 messages
+    history = current_user.messages.order_by(ChatMessage.timestamp.asc()).limit(50).all()
+    return render_template('chat.html', history=history)
 
 @app.route('/api/chat', methods=['POST'])
 @login_required
@@ -128,11 +170,22 @@ def chat_api():
     data = request.json
     user_message = data.get('message', '')
     
+    # Save User Message
+    user_msg_db = ChatMessage(content=user_message, role='user', author=current_user)
+    db.session.add(user_msg_db)
+    db.session.commit()
+
     # 1. Safety / Crisis Check (Rule-based First Line of Defense)
     crisis_keywords = ['suicide', 'kill myself', 'hurt myself', 'end it all', 'die', 'overdose']
     if any(keyword in user_message.lower() for keyword in crisis_keywords):
+        response_text = "CRITICAL: I'm very concerned about what you're saying. Please know that you're not alone. If you're in immediate danger, please call emergency services (911 in the U.S.) or the National Suicide Prevention Lifeline at 988. I am an AI and cannot provide professional help."
+        
+        ai_msg_db = ChatMessage(content=response_text, role='assistant', author=current_user, is_crisis=True)
+        db.session.add(ai_msg_db)
+        db.session.commit()
+        
         return jsonify({
-            'response': "CRITICAL: I'm very concerned about what you're saying. Please know that you're not alone. If you're in immediate danger, please call emergency services (911 in the U.S.) or the National Suicide Prevention Lifeline at 988. I am an AI and cannot provide professional help.",
+            'response': response_text,
             'is_crisis': True
         })
 
@@ -147,15 +200,33 @@ def chat_api():
                 'is_crisis': False
             })
 
+        # Build Context (System prompt + last 10 messages)
+        recent_history = current_user.messages.order_by(ChatMessage.timestamp.desc()).limit(10).all()
+        recent_history.reverse() # Oldest to newest
+        
+        messages_payload = [
+            {"role": "system", "content": "You are Claria, a compassionate, supportive, and non-judgmental mental health companion. Your goal is to listen, validate feelings, and offer gentle coping strategies. You are NOT a licensed therapist and should not diagnose or prescribe. If a user seems to be in severe distress, kindly suggest they seek professional help. Keep your responses concise (under 100 words), warm, and encouraging. Use a calm, soothing tone. Use logical markdown formatting like bolding for key terms."}
+        ]
+        
+        for msg in recent_history:
+            # We already added the current user message at the top of this function, 
+            # so it might be in recent_history if we committed earlier.
+            # However, we want to ensure we don't duplicate it if logic overlaps.
+            # Simple approach: Trust the DB query.
+            messages_payload.append({"role": "user" if msg.role == 'user' else "assistant", "content": msg.content})
+
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are Claria, a compassionate, supportive, and non-judgmental mental health companion. Your goal is to listen, validate feelings, and offer gentle coping strategies. You are NOT a licensed therapist and should not diagnose or prescribe. If a user seems to be in severe distress, kindly suggest they seek professional help. Keep your responses concise (under 100 words), warm, and encouraging. Use a calm, soothing tone."},
-                {"role": "user", "content": user_message}
-            ]
+            messages=messages_payload
         )
         
         ai_response = completion.choices[0].message.content
+        
+        # Save AI Response
+        ai_msg_db = ChatMessage(content=ai_response, role='assistant', author=current_user)
+        db.session.add(ai_msg_db)
+        db.session.commit()
+        
         return jsonify({
             'response': ai_response,
             'is_crisis': False
@@ -164,13 +235,18 @@ def chat_api():
     except Exception as e:
         print(f"OpenAI Error: {e}")
         # Fallback responses if API fails
-        responses = [
+        fallback_responses = [
             "I'm having trouble connecting to my thought process right now, but I'm still here with you.",
             "I hear you, but I'm experiencing a technical hiccup. Please try again in a moment.",
             "It seems I can't reach the server. Just know that your feelings are valid."
         ]
+        resp = random.choice(fallback_responses)
+        ai_msg_db = ChatMessage(content=resp, role='assistant', author=current_user)
+        db.session.add(ai_msg_db)
+        db.session.commit()
+        
         return jsonify({
-            'response': random.choice(responses),
+            'response': resp,
             'is_crisis': False
         })
 

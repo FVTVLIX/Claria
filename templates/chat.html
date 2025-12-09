@@ -1,35 +1,169 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="chat-wrapper" style="max-width: 800px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h1><i class="fa-solid fa-robot" style="color: var(--primary-color);"></i> Claria Companion</h1>
-        <span class="badge"
-            style="background: #e1fcf6; color: #00b894; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">
-            <i class="fa-solid fa-circle" style="font-size: 0.6rem;"></i> Online
-        </span>
+<div id="oracle-loader">
+    <div class="loader-content">
+        <i class="fa-solid fa-eye fa-3x" style="color: var(--text-main);"></i>
+        <p style="margin-top: 1rem; font-family: var(--font-mono); letter-spacing: 2px;">ALIGNING...</p>
+    </div>
+</div>
+
+<div class="chat-wrapper" id="chat-wrapper"
+    style="max-width: 900px; margin: 0 auto; opacity: 0; transition: opacity 1s ease;">
+
+    <div class="chat-header">
+        <div>
+            <h1>ORACLE</h1>
+            <p class="text-muted" style="margin: 0; font-family: var(--font-mono); font-size: 0.9rem;">
+                <i class="fa-solid fa-circle" style="color: #00b894; font-size: 0.6rem;"></i> 24/7 COMPANION
+            </p>
+        </div>
+        <div style="text-align: right;">
+            <button class="btn-secondary" onclick="clearChat()" style="font-size: 0.8rem; padding: 5px 10px;">RESET
+                MEMORY</button>
+        </div>
     </div>
 
     <div class="chat-container">
         <div class="chat-messages" id="chat-messages">
+            <!-- Persistent History -->
+            {% if history %}
+            {% for msg in history %}
+            <div class="message {{ 'user' if msg.role == 'user' else 'ai' }} {{ 'crisis' if msg.is_crisis }}">
+                {{ msg.content }}
+            </div>
+            {% endfor %}
+            {% else %}
             <div class="message ai">
-                Hello! I'm Claria. I'm here to listen, support, and help you navigate your feelings. How are you feeling
-                today?
+                Greetings. I am Claria. I am here to listen, support, and help you navigate your inner world. How are
+                you feeling right now?
+            </div>
+            {% endif %}
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typing-indicator">
+                <span></span><span></span><span></span>
             </div>
         </div>
+
+        <!-- Suggestion Chips -->
+        <div class="chat-suggestions">
+            <div class="suggestion-chip" onclick="sendSuggestion('I feel anxious and need to ground myself')">I feel
+                anxious</div>
+            <div class="suggestion-chip" onclick="sendSuggestion('I am having trouble sleeping')">Can't sleep</div>
+            <div class="suggestion-chip" onclick="sendSuggestion('I just want to vent about my day')">Vent about day
+            </div>
+            <div class="suggestion-chip" onclick="sendSuggestion('Tell me a coping strategy for stress')">Stressed out
+            </div>
+            <div class="suggestion-chip" onclick="sendSuggestion('I feel lonely right now')">Feeling lonely</div>
+        </div>
+
         <form class="chat-input-area" id="chat-form">
-            <input type="text" id="chat-input" placeholder="Type your message here..."
-                style="flex: 1; padding: 12px; border: 1px solid #dfe6e9; border-radius: 20px; outline: none;">
-            <button type="submit" class="btn-primary"
-                style="border-radius: 50%; width: 50px; height: 50px; padding: 0; display: flex; align-items: center; justify-content: center;">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+            <input type="text" id="chat-input" placeholder="Consult the Oracle..." autocomplete="off">
+            <button type="submit">SEND <i class="fa-solid fa-arrow-right"></i></button>
         </form>
     </div>
 
-    <div style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
-        <i class="fa-solid fa-shield-heart"></i> Your conversations are private. Claria is an AI and not a replacement
-        for professional help.
+    <div
+        style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono);">
+        *** CLARIA IS AN AI. FOR MEDICAL EMERGENCIES CALL 911 ***
     </div>
 </div>
+
+<script>
+    // Oracle Loader Logic
+    document.addEventListener("DOMContentLoaded", function () {
+        const loader = document.getElementById('oracle-loader');
+        const wrapper = document.getElementById('chat-wrapper');
+
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            wrapper.style.opacity = '1';
+
+            // Remove loader from DOM after transition
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 1000);
+        }, 1500); // 1.5s display time
+    });
+
+    const chatInput = document.getElementById('chat-input');
+    const chatForm = document.getElementById('chat-form');
+    const messagesContainer = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Auto-scroll to bottom on load
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    function appendMessage(text, sender, isCrisis = false) {
+        const div = document.createElement('div');
+        div.classList.add('message', sender);
+        if (isCrisis) div.classList.add('crisis');
+
+        // Simple Markdown parsing (Bold **text**)
+        let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        div.innerHTML = formattedText;
+
+        // Insert before typing indicator
+        messagesContainer.insertBefore(div, typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTyping() {
+        typingIndicator.style.display = 'block';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideTyping() {
+        typingIndicator.style.display = 'none';
+    }
+
+    function sendSuggestion(text) {
+        chatInput.value = text;
+        chatForm.dispatchEvent(new Event('submit'));
+    }
+
+    // Override the global main.js listener which might conflict, or just implement specific logic here
+    // Since main.js handles it globally, we should disable that or rely on this one. 
+    // Best practice: remove the event listener from main.js or use a specialized one here.
+    // I will use a specific handler here and ensure main.js doesn't double send if possible.
+    // Actually, main.js has logic for #chat-form. I'll rely on this inline script and update main.js (next step) to remove the conflicting logic or make this script replace it.
+
+    // Let's redefine the submit handler to be self-contained here for "Oracle 2.0"
+    chatForm.onsubmit = async function (e) {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        appendMessage(message, 'user');
+        chatInput.value = '';
+        showTyping();
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            });
+
+            const data = await response.json();
+            hideTyping();
+            appendMessage(data.response, 'ai', data.is_crisis);
+        } catch (error) {
+            console.error('Error:', error);
+            hideTyping();
+            appendMessage("The Oracle is clouded... (Connection Error)", 'ai');
+        }
+    };
+
+    function clearChat() {
+        // In a real app we'd call an API to clear DB
+        if (confirm("Clear local view? (History remains in database)")) {
+            messagesContainer.innerHTML = '';
+            messagesContainer.appendChild(typingIndicator);
+        }
+    }
+</script>
 {% endblock %}

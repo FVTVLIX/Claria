@@ -1,3 +1,6 @@
+![Claria Logo](https://lh3.googleusercontent.com/pw/AP1GczNFct_VpP5_Eui0YRM9s0e18z14CmghSBTLutsr_WMFr1oU7Ggk_CXt7XJopfxYOCztHosU0OS2jiPK1nKWKz_xq6af2rVbHtAaC8-GC-dyrKLxOpg3lZBRej9Sgm7ljMltvBQz1Ru6huOJCblhGMbxHQ=w1792-h592-s-no-gm?authuser=0)
+
+
 # CLARIA
 
 ### Align Your Mind.

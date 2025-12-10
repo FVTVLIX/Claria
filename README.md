@@ -70,7 +70,7 @@ Follow these steps to deploy Claria locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/claria.git
+git clone https://github.com/FVTVLIX/claria.git
 cd claria
 ```
 

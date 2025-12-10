@@ -615,7 +615,7 @@ h2 {
 /* --- Torn Edge Effects --- */
 .torn-section {
     position: relative;
-    padding: 6rem 2rem;
+    padding: 10rem 2rem;
     margin: 2rem 0;
     background: #fff;
     color: var(--text-main);
